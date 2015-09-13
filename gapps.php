@@ -27,14 +27,18 @@ function forsale_form() {
 	echo '</p>';
 
 	echo '<p>';
+	echo 'Property Info <br/>';
+	echo '<textarea rows="10" cols="35" name="forsale-propinfo">' . ( isset( $_POST["forsale-propinfo"] ) ? esc_attr( $_POST["forsale-propinfo"] ) : '' ) . '</textarea>';
 	echo '</p>';
 
 	echo '<p>';
 	echo 'Estimation Value <br/>';
+	echo '<input type="text" name="forsale-value" pattern="[a-zA-Z0-9 ]+" value="' . ( isset( $_POST["forsale-value"] ) ? esc_attr( $_POST["forsale-value"] ) : '' ) . '" size="30" />';
 	echo '</p>';
 
 	echo '<p>';
 	echo 'Asking Price <br/>';
+	echo '<input type="text" name="forsale-price" pattern="[a-zA-Z0-9 ]+" value="' . ( isset( $_POST["forsale-price"] ) ? esc_attr( $_POST["forsale-price"] ) : '' ) . '" size="10" />';
 	echo '</p>';
 
 
@@ -47,14 +51,60 @@ function forsale_form() {
 	echo '</form>';
 }
 
+function insert_db() {
+
+	echo 'Insert Section!';
 
 	// if the submit button is clicked, send the email
 	if ( isset( $_POST['forsale-submitted'] ) ) {
 
 		// sanitize form values
 		$name    = sanitize_text_field( $_POST["forsale-name"] );
+		$phone    = sanitize_text_field( $_POST["forsale-phone"] );
 		$email   = sanitize_email( $_POST["forsale-email"] );
+		$propinfo = esc_textarea( $_POST["forsale-propinfo"] );
+		$marketvalue = sanitize_text_field( $_POST["forsale-value"] );
+		$price = sanitize_text_field( $_POST["forsale-price"] );
+		$notes = esc_textarea( $_POST["forsale-notes"] );
 
+		$now = 'now()';
+
+		//insert to db
+		global $wpdb
+
+		$result = $wpdb->insert( 
+			'forsale', 
+			array( 
+				'name' => $name, 
+				'phone' => $phone,
+				'email' => $email,
+				'propinfo' => $propinfo,
+				'marketvalue' => $marketvalue,
+				'price' => $price,
+				'notes' => $notes,
+				'date_create' => $now
+			 ), 
+			array( 
+				'%s', 
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s'
+			) 
+		);
+
+		if ($result) {
+		    echo 'Inserted row ID#' . $wpdb->insert_id;
+		} else {
+		    echo 'Insert failed!';
+		}
+
+ 		$wpdb->show_erros();
+
+/*
 		// get the blog administrator's email address
 		$to = get_option( 'admin_email' );
 
@@ -67,10 +117,13 @@ function forsale_form() {
 			echo '</div>';
 		} else {
 			echo 'An unexpected error occurred';
+		}*/
 	}
+}
 
 function forsale_shortcode() {
 	ob_start();
+	insert_db();
 	forsale_form();
 
 	return ob_get_clean();
