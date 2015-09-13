@@ -70,9 +70,9 @@ function insert_db() {
 		$now = 'now()';
 
 		//insert to db
-		global $wpdb
+		global $wpdb;
 
-		$result = $wpdb->insert( 
+		$wpdb->insert( 
 			'forsale', 
 			array( 
 				'name' => $name, 
@@ -95,14 +95,6 @@ function insert_db() {
 				'%s'
 			) 
 		);
-
-		if ($result) {
-		    echo 'Inserted row ID#' . $wpdb->insert_id;
-		} else {
-		    echo 'Insert failed!';
-		}
-
- 		$wpdb->show_erros();
 
 /*
 		// get the blog administrator's email address
