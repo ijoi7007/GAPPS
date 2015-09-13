@@ -58,6 +58,8 @@ function insert_db() {
 	// if the submit button is clicked, send the email
 	if ( isset( $_POST['forsale-submitted'] ) ) {
 
+		echo 'submit to db function!';
+
 		// sanitize form values
 		$name    = sanitize_text_field( $_POST["forsale-name"] );
 		$phone    = sanitize_text_field( $_POST["forsale-phone"] );
@@ -72,17 +74,17 @@ function insert_db() {
 		//insert to db
 		global $wpdb;
 
-		$wpdb->insert( 
+		$result = $wpdb->insert( 
 			'forsale', 
 			array( 
 				'name' => $name, 
 				'phone' => $phone,
 				'email' => $email,
 				'propinfo' => $propinfo,
-				'marketvalue' => $marketvalue,
+				'value' => $marketvalue,
 				'price' => $price,
 				'notes' => $notes,
-				'date_create' => $now
+				'create_time' => current_time('mysql', 1)
 			 ), 
 			array( 
 				'%s', 
@@ -96,20 +98,11 @@ function insert_db() {
 			) 
 		);
 
-/*
-		// get the blog administrator's email address
-		$to = get_option( 'admin_email' );
-
-		$headers = "From: $name <$email>" . "\r\n";
-
-		// If email has been process for sending, display a success message
-		if ( wp_mail( $to, $subject, $message, $headers ) ) {
-			echo '<div>';
-			echo '<p>Thanks for contacting me, expect a response soon.</p>';
-			echo '</div>';
+		if ($result) {
+		    echo 'Inserted row ID#' . $wpdb->insert_id;
 		} else {
-			echo 'An unexpected error occurred';
-		}*/
+		    echo 'Insert failed!';
+}
 	}
 }
 
