@@ -58,7 +58,6 @@ function insert_db() {
 	// if the submit button is clicked, send the email
 	if ( isset( $_POST['forsale-submitted'] ) ) {
 
-		echo 'submit to db function!';
 
 		// sanitize form values
 		$name    = sanitize_text_field( $_POST["forsale-name"] );
